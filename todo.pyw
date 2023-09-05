@@ -10,6 +10,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from datetime import datetime
+import threading
+import requests
+import time
 import json
 import os
 
@@ -399,7 +402,44 @@ class Ui_MainWindow(object):
         self.actionDelete.setText(_translate("MainWindow", "Delete"))
 
     def check_update(self):
-        print("update")
+        choice = [-1]
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setStandardButtons(QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Ok)
+
+        t = threading.Thread(target=self.check_update_internal, args=(msg,choice,))
+        t.daemon = True
+        t.start()
+
+        choice[0] = msg.exec()
+        while choice[0]!=0 and choice[0]!=1024 and choice[0]!=4194304:
+            time.sleep(0.5)
+        if choice[0]==0:
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setWindowTitle("Update successfully")
+            msg.setText("Please restart program to make changes!")
+            msg.exec()
+            exit(1)
+
+    def check_update_internal(self, msg, choice):
+        msg.setWindowTitle("Update")
+        msg.setText("Checking for any updates...\nPlease don't close this popup!     ")
+        while True:
+            re = requests.get('https://github.com/nhtri2003gmail/To-Do-List/releases/download/update/todo.pyw')
+            if re.content[:23] == b'# -*- coding: utf-8 -*-':
+                break
+        datas = open(sys.argv[0], 'rb').read()
+        if datas!=re.content:
+            msg.setText("Update available, install?")
+            while choice[0]!=1024 and choice[0]!=4194304:
+                time.sleep(0.5)
+            if choice[0]==1024:
+                open(sys.argv[0], 'wb').write()
+                choice[0] = 0
+                exit(1)
+        else:
+            msg.setText("No update available")
 
     def show_about(self):
         pass
