@@ -357,6 +357,7 @@ class Ui_MainWindow(object):
         self.restore_btn.clicked.connect(self.restore_history_job)
         self.clear_btn.clicked.connect(self.clear_history_job)
         self.menu_update.triggered.connect(self.check_update)
+        self.menu_about.triggered.connect(self.show_about)
         self.view_list[0].itemClicked.connect(lambda: self.set_details(0))
         self.view_list[1].itemClicked.connect(lambda: self.set_details(1))
         self.view_list[2].itemClicked.connect(lambda: self.set_details(2))
@@ -442,7 +443,11 @@ class Ui_MainWindow(object):
             msg.setText("No update available")
 
     def show_about(self):
-        pass
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setWindowTitle("About")
+        msg.setText("To-Do list version 1.0\nThis application is inspired by Eisenhower Box strategy for time management\n\nCredit: Johnathan Huu Tri")
+        msg.exec()
 
     def set_type_color(self):
         if self.type_cbb.currentIndex()==0:
