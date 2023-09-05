@@ -427,7 +427,7 @@ class Ui_MainWindow(object):
         msg.setWindowTitle("Update")
         msg.setText("Checking for any updates...\nPlease don't close this popup!     ")
         while True:
-            re = requests.get('https://github.com/nhtri2003gmail/To-Do-List/releases/download/update/todo.pyw')
+            re = requests.get('https://raw.githubusercontent.com/nhtri2003gmail/To-Do-List/master/todo.pyw')
             if re.content[:23] == b'# -*- coding: utf-8 -*-':
                 break
         datas = open(sys.argv[0], 'rb').read()
